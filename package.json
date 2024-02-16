@@ -1,0 +1,19 @@
+{
+  "name": "teacher",
+  "version": "1.0.0",
+  "description": "Teacher ranking system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Duncan",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0",
+    "mongoose": "^6.0.11",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results:</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header id="header">
+        <h1>Find Your Kelly Teacher</h1>
+        <p>Data from Fall 2023 only</p>
+        <img id="IUImage" src="IU.png" alt="Search icon">
+    </header>
+    
+    <div id="about">
+        <h2>About:</h2>
+        <p>Find Your Kelly Teacher is a simple web app that allows you to search for a teacher by name. Enter the teacher's name in the search box and click the "Search" button to see the results. If you don't know a teacher's name, you can search up my favorite Jamie Seitz.</p>
+    </div>
+    
+    <form id="searchForm">
+        <label for="searchInput">Search:</label>
+        <input type="text" id="searchInput" name="searchInput" placeholder="Enter Teachers Name">
+        <button type="submit">Search</button>
+    </form>
+    
+    
+    <div id="searchResults" class="hidden">
+        <h2>Search Results:</h2>
+        <p id="searchTerm"></p>
+    </div>
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchResultsContainer = document.getElementById('searchResults');
+        const searchTermElement = document.getElementById('searchTerm');
+    
+        searchForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(searchForm);
+            const searchTerm = formData.get('searchInput');
+    
+            try {
+                const response = await fetch(`/search?searchInput=${searchTerm}`);
+                const searchResults = await response.json();
+                searchResultsContainer.classList.remove('hidden');
+
+                searchResultsContainer.innerHTML = '';
+                
+                const searchResultsHeader = document.createElement('h2');
+                searchResultsHeader.textContent = 'Search Results:';
+                searchResultsContainer.appendChild(searchResultsHeader);
+
+                const searchFor = document.createElement('h2');
+                searchFor.textContent = `Searched for: ${searchTerm}`;
+                searchResultsContainer.appendChild(searchFor);
+
+                if (Array.isArray(searchResults)) {
+                    if (searchResults.length === 0) {
+                        const noResultsItem = document.createElement('p');
+                        noResultsItem.textContent = 'No results found.';
+                        searchResultsContainer.appendChild(noResultsItem);
+                    } else {
+                        searchResults.forEach(result => {
+                            for (const key in result) {
+                                if (key === '_id') {
+                                    continue;
+                                }
+                                if (key === 'name') {
+                                    const resultItem = document.createElement('p');
+                                    resultItem.textContent = `Name: ${result[key]}`;
+                                    searchResultsContainer.appendChild(resultItem);
+                                }
+                                if (key === 'className') {
+                                    const resultItem = document.createElement('p');
+                                    resultItem.textContent = `Class: ${result[key]}`;
+                                    searchResultsContainer.appendChild(resultItem);
+                                }
+                                if (key === 'classCode') {
+                                    const resultItem = document.createElement('p');
+                                    resultItem.textContent = `Class Code: ${result[key]}`;
+                                    searchResultsContainer.appendChild(resultItem);
+                                }
+                                if (key === 'semester') {
+                                    const resultItem = document.createElement('p');
+                                    resultItem.textContent = `Semester: ${result[key]}`;
+                                    searchResultsContainer.appendChild(resultItem);
+                                }
+                                if (key === 'A' || key === 'B' || key === 'C' || key === 'D') {
+                                    const resultItem = document.createElement('p');
+                                    resultItem.textContent = `${key}: ${result[key]}%`;
+                                    searchResultsContainer.appendChild(resultItem);
+                                }
+                                if (key === 'rateMyProff') {
+                                    const link = document.createElement('a');
+                                    link.textContent = 'Rate My Proff Link'; 
+                                    link.href = result[key];
+                                    link.target = '_blank';
+                                    searchResultsContainer.appendChild(link);
+                                    link.style.color = 'blue'; 
+                                    link.style.textDecoration = 'underline'; 
+                                    link.style.cursor = 'pointer'; 
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    
+                    const resultItem = document.createElement('p');
+                    resultItem.textContent = 'no results found. Please try again.'; 
+                    searchResultsContainer.appendChild(resultItem);
+                }
+            } catch (error) {
+                console.error('Error searching:', error);
+            }
+        });
+    </script>
+    <footer id="contact">
+        <h4>Contact</h4>
+        <p>Email: wjduncan@iu.edu</p>
+        <a href="https://www.linkedin.com/in/william-duncan23/" target="_blank">LinkedIn</a>
+    </footer>
+</body>
+</html>
